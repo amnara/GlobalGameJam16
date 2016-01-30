@@ -15,5 +15,16 @@ public class Player : MonoBehaviour {
 
 	void Update () {
 		cameraController.RotateCamera(transform, mainCamera.transform);
+
+		// If Right mouse button
+		if(Input.GetMouseButtonDown(1)) {
+			var focusedObject = cameraController.GetFocusedObject();
+
+			if(focusedObject != null) {
+				Debug.Log("HAS OBJECT: " + focusedObject);
+			} else {
+				Debug.Log("No cigar");
+			}
+		}
 	}
 }
