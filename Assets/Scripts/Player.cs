@@ -1,25 +1,55 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Player : MonoBehaviour {
 
-	Camera camera;
-	CameraController cameraController;
+	Camera mainCamera;
 
-	public float XSensitivity = 2.0f;
-	public float YSensitivity = 2.0f;
+	public CameraController cameraController;
 
 
-	// Use this for initialization
 	void Start () {
-		
-		camera = Camera.main;
-		cameraController = new CameraController();
-		cameraController.Init(transform, camera.transform);
+		mainCamera = Camera.main;
+		cameraController.Init(transform, mainCamera.transform);
 	}
 
-	// Update is called once per frame
 	void Update () {
-		cameraController.RotateCamera(transform, camera.transform);
+		cameraController.RotateCamera(transform, mainCamera.transform);
+
+		// If Right mouse button
+		if(Input.GetMouseButtonDown(1)) {
+			GameObject focusedObject = GetFocusedObject();
+
+			if(focusedObject != null) {
+				Debug.Log("HAS OBJECT: " + focusedObject);
+			} else {
+				Debug.Log("No cigar");
+			}
+		}
+	}
+
+	public GameObject GetFocusedObject() {
+		List<RaycastHit> hits = new List<RaycastHit>();
+		GameObject closestObject = null;
+		float closestDistance = Mathf.Infinity;
+
+		Ray ray = cameraController.GetCenterRay();
+
+		hits.AddRange(Physics.RaycastAll(ray.origin, ray.direction));
+
+		foreach(RaycastHit hit in hits) {
+			GameObject go = hit.collider.gameObject;
+			//			Debug.Log("HIT SOMETHING?:\n "+ go);
+
+			// Only add if throwable for now
+			if(go.tag == "Throwable" && hit.distance < closestDistance) {
+				Debug.Log("Aww yiss");
+				closestObject = go;
+				closestDistance = hit.distance;
+			}
+		}
+
+		return closestObject;
 	}
 }
