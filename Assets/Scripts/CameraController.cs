@@ -62,14 +62,6 @@ public class CameraController {
 		return q;
 	}
 
-	public void UpdateCursorPosition() {
-		var cursorPos = Input.mousePosition;
-		var rect = new Rect();
-		rect.height = cursorTexture.height;
-		rect.width = cursorTexture.width;
-		GUI.DrawTexture(rect, cursorTexture);
-	}
-
 	public void RayCastCursorPosition() {
 		Vector3 currentMouse = Input.mousePosition;
 		Ray ray = Camera.main.ScreenPointToRay (currentMouse);
