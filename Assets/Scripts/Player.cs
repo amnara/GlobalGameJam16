@@ -3,23 +3,17 @@ using System.Collections;
 
 public class Player : MonoBehaviour {
 
-	Camera camera;
-	CameraController cameraController;
+	Camera mainCamera;
 
-	public float XSensitivity = 2.0f;
-	public float YSensitivity = 2.0f;
+	public CameraController cameraController;
 
 
-	// Use this for initialization
 	void Start () {
-		
-		camera = Camera.main;
-		cameraController = new CameraController();
-		cameraController.Init(transform, camera.transform);
+		mainCamera = Camera.main;
+		cameraController.Init(transform, mainCamera.transform);
 	}
 
-	// Update is called once per frame
 	void Update () {
-		cameraController.RotateCamera(transform, camera.transform);
+		cameraController.RotateCamera(transform, mainCamera.transform);
 	}
 }

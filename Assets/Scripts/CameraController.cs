@@ -1,25 +1,43 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 
-public class CameraController : MonoBehaviour {
+[Serializable]
+public class CameraController {
 
 	Camera camera;
 	private Quaternion cameraRotation;
 	private Quaternion playerRotation;
+	private Vector2 cursorHotspot;
 
 	public float XSensitivity = 2.0f;
 	public float YSensitivity = 2.0f;
+	public Texture2D cursorTexture;
 
 	public void Init(Transform player, Transform camera) {
-		Cursor.lockState = CursorLockMode.Locked;
-		Cursor.visible = false;
-
 		cameraRotation = camera.localRotation;
 		playerRotation = player.localRotation;
+
+		InitCursor();
+	}
+
+	public void InitCursor() {
+		Cursor.lockState = CursorLockMode.Locked;
+		cursorHotspot = new Vector2 (cursorTexture.width / 2, cursorTexture.height / 2);
+		Cursor.SetCursor(cursorTexture, cursorHotspot, CursorMode.Auto);
+	}
+
+	public void RayCastCursorPosition() {
+		Vector3 currentMouse = Input.mousePosition;
+		Ray ray = Camera.main.ScreenPointToRay (currentMouse);
+		RaycastHit2D hit = Physics2D.Raycast (ray.origin, ray.direction);
+		Debug.DrawLine (ray.origin, hit.point, Color.red);
 	}
 
 	public void RotateCamera(Transform player, Transform camera)
 	{
+		Cursor.lockState = CursorLockMode.Locked;
+
 		float yRot = Input.GetAxis("Mouse X") * XSensitivity;
 		float xRot = Input.GetAxis("Mouse Y") * YSensitivity;
 
@@ -30,6 +48,9 @@ public class CameraController : MonoBehaviour {
 
 		camera.localRotation = cameraRotation;
 		player.localRotation = playerRotation;
+
+		RayCastCursorPosition();
+		Cursor.visible = true;
 	}
 
 	Quaternion LimitVerticalRotation(Quaternion q)
