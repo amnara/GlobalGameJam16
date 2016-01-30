@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 
 [Serializable]
 public class CameraController {
@@ -47,30 +46,6 @@ public class CameraController {
 		Cursor.visible = true;
 	}
 
-	public GameObject GetFocusedObject() {
-		List<RaycastHit> hits = new List<RaycastHit>();
-		GameObject closestObject = null;
-		float closestDistance = Mathf.Infinity;
-
-		Ray ray = getCenterRay();
-
-		hits.AddRange(Physics.RaycastAll(ray.origin, ray.direction));
-
-		foreach(RaycastHit hit in hits) {
-			GameObject go = hit.collider.gameObject;
-//			Debug.Log("HIT SOMETHING?:\n "+ go);
-
-			// Only add if throwable for now
-			if(go.tag == "Throwable" && hit.distance < closestDistance) {
-				Debug.Log("Aww yiss");
-				closestObject = go;
-				closestDistance = hit.distance;
-			}
-		}
-
-		return closestObject;
-	}
-
 	Quaternion LimitVerticalRotation(Quaternion q)
 	{
 		q.x /= q.w;
@@ -88,11 +63,11 @@ public class CameraController {
 	}
 
 	public void RayCastCursorPosition() {
-		Ray ray = getCenterRay(); 
+		Ray ray = GetCenterRay(); 
 		Debug.DrawRay (ray.origin, ray.direction, Color.red);
 	}
 
-	private Ray getCenterRay() {
+	public Ray GetCenterRay() {
 		Vector3 currentMouse = Input.mousePosition;
 		Ray ray = Camera.main.ScreenPointToRay (currentMouse);
 		return ray;
