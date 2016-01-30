@@ -1,41 +1,69 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
-public class Quest
-{
-    string QuestDesc;
-    bool QuestStatus = false;
-
-    TextMesh QuestMesh;
-
-    public Quest()
-    {
-        this.QuestDesc = "This is a new quest!";
-        this.QuestStatus = false;
-
-    }
-
-    public Quest(string questDesc)
-    {
-        this.QuestDesc = questDesc;
-    }
-
-    public void BuildMesh()
-    {
-        this.QuestMesh = new TextMesh();
-        this.QuestMesh.text = this.QuestDesc;
-
-    }
-
-}
 
 public class QuestLog : MonoBehaviour {
+    
+    public Dictionary<Quest.QuestNames, Quest> AllQuests = new Dictionary<Quest.QuestNames, Quest>();
+    
+    void Start()
+    {
+        Vector3 InitialPosition = transform.position;
+        Quaternion InitialRotation = transform.rotation;
 
-    //List of all quests 
-    Quest[] AllQuests = new Quest[2];
+        //var PlaneDimensions = Quest.QuestPrefaIsBorn.GetComponent<Mesh>().bounds;
+        var PlaneDimensions = Quest.QuestPrefaIsBorn.GetComponent<Renderer>().bounds.size;
+        float PlaneWidth = PlaneDimensions[0];
+        float PlaneHeight = PlaneDimensions[2];
 
-	// Use this for initialization
-	void Start () {
-	    
-	}
+
+
+        int i = 0;
+        foreach (Quest q in GetComponents<Quest>())
+        {
+            Debug.Log("Started collecting defined quests.");
+            q.MoveQuestPlane(transform.position + new Vector3(0,0,PlaneHeight) * i);
+            
+            Debug.Log("Quest plane position: " + q.QuestPosition.ToString());
+
+
+            // Store each quest available
+            AllQuests.Add(q.QuestId, q);
+            i++;
+
+
+        }
+    }
+
+    /// <summary>
+    /// Takes the current order of quests, and position all of their planes, such that they align vertically. 
+    /// </summary>
+    public void OrientateQuestsInGameWorld()
+    {
+        
+    }
+
+
+    /// <summary>
+    /// Completes a given quest. To be used by Game Logic. 
+    /// </summary>
+    /// <param name="name"></param>
+    public void CompleteQuest(Quest.QuestNames name)
+    {
+        //Figure out, if there is a quest with that name
+        if (this.AllQuests.ContainsKey(name))
+        {
+            this.AllQuests[name].QuestCompleted();
+            Debug.Log("Completed a quest! Which one??");
+        }
+        else
+            Debug.Log("Completed a non-existing quest!");
+        
+    }
+
+
+
+
+
 }
