@@ -27,13 +27,6 @@ public class CameraController {
 		Cursor.SetCursor(cursorTexture, cursorHotspot, CursorMode.Auto);
 	}
 
-	public void RayCastCursorPosition() {
-		Vector3 currentMouse = Input.mousePosition;
-		Ray ray = Camera.main.ScreenPointToRay (currentMouse);
-		RaycastHit2D hit = Physics2D.Raycast (ray.origin, ray.direction);
-		Debug.DrawLine (ray.origin, hit.point, Color.red);
-	}
-
 	public void RotateCamera(Transform player, Transform camera)
 	{
 		Cursor.lockState = CursorLockMode.Locked;
@@ -67,5 +60,16 @@ public class CameraController {
 		q.x = Mathf.Tan (0.5f * Mathf.Deg2Rad * angleX);
 
 		return q;
+	}
+
+	public void RayCastCursorPosition() {
+		Ray ray = GetCenterRay(); 
+		Debug.DrawRay (ray.origin, ray.direction, Color.red);
+	}
+
+	public Ray GetCenterRay() {
+		Vector3 currentMouse = Input.mousePosition;
+		Ray ray = Camera.main.ScreenPointToRay (currentMouse);
+		return ray;
 	}
 }
